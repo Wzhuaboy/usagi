@@ -18,53 +18,55 @@ h1 { font-size: 32px; letter-spacing: 2px; }
 .card:hover { border-color: #f59e0b; }
 .card h2 { font-size: 17px; margin-bottom: 6px; }
 .card p { font-size: 13px; color: #888; line-height: 1.6; }
-.card span { display: block; margin-top: 10px; font-size: 12px; color: #bbb; }
+.card span { display: block; margin-top: 10px; font-size: 12px; color: #bbb; word-break: break-all; }
 footer { text-align: center; margin-top: 40px; color: #bbb; font-size: 13px; }
 footer a { color: #bbb; }
+.loading { text-align: center; color: #bbb; font-size: 14px; padding: 40px 0; }
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
 <div class="logo">U</div>
-<h1>Usagi</h1>
-<p class="sub">Wzhuaboy 的个人小站</p>
+<h1 id="site-title">Usagi</h1>
+<p class="sub" id="site-subtitle">Wzhuaboy 的个人小站</p>
 </header>
-<div class="grid">
-<a class="card" href="https://wzhuaboy.github.io/museai/salary/" target="_blank" rel="noopener">
-<h2>每秒工资余额</h2>
-<p>上班时间，工资每秒都在涨</p>
-<span>wzhuaboy.github.io/museai/salary/</span>
-</a>
-<a class="card" href="https://wzhuaboy.github.io/museai/hiddify-tutorial/" target="_blank" rel="noopener">
-<h2>Hiddify 导入教程</h2>
-<p>手把手导入订阅，朱总专用</p>
-<span>wzhuaboy.github.io/museai/hiddify-tutorial/</span>
-</a>
-<a class="card" href="https://wzhuaboy.github.io/museai/记账本/" target="_blank" rel="noopener">
-<h2>阿华手帐本</h2>
-<p>记账，支出和收入一目了然</p>
-<span>wzhuaboy.github.io/museai/记账本/</span>
-</a>
-<a class="card" href="https://wzhuaboy.github.io/museai/huarongdao/" target="_blank" rel="noopener">
-<h2>USAGI 华容道</h2>
-<p>兔子拼图小游戏</p>
-<span>wzhuaboy.github.io/museai/huarongdao/</span>
-</a>
-<a class="card" href="https://wzhuaboy.github.io/biaozhunchaxin/" target="_blank" rel="noopener">
-<h2>标准查新</h2>
-<p>断路器相关标准查新</p>
-<span>wzhuaboy.github.io/biaozhunchaxin/</span>
-</a>
-<a class="card" href="https://wzhuaboy.github.io/RL-zukangjisuan/" target="_blank" rel="noopener">
-<h2>RL 交流参数计算器</h2>
-<p>电阻电感交流参数计算</p>
-<span>wzhuaboy.github.io/RL-zukangjisuan/</span>
-</a>
-</div>
+<div class="grid" id="links"><p class="loading">加载中……</p></div>
 <footer>
-<p>usagi.loc.cc · <a href="https://github.com/Wzhuaboy" target="_blank" rel="noopener">GitHub @Wzhuaboy</a></p>
+<p>usagi.loc.cc · <a href="https://github.com/Wzhuaboy" target="_blank" rel="noopener">GitHub @Wzhuaboy</a> · <a href="admin/">管理后台</a></p>
 </footer>
 </div>
+<script>
+fetch("data/links.json")
+  .then(function (r) { if (!r.ok) throw new Error("load failed"); return r.json(); })
+  .then(function (data) {
+    document.getElementById("site-title").textContent = data.title || "Usagi";
+    document.getElementById("site-subtitle").textContent = data.subtitle || "";
+    var box = document.getElementById("links");
+    box.innerHTML = "";
+    (data.links || []).forEach(function (link) {
+      var host = "";
+      try { host = new URL(link.url).host + new URL(link.url).pathname; } catch (e) { host = link.url; }
+      var a = document.createElement("a");
+      a.className = "card";
+      a.href = link.url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      var h2 = document.createElement("h2");
+      h2.textContent = link.title;
+      var p = document.createElement("p");
+      p.textContent = link.description || "";
+      var span = document.createElement("span");
+      span.textContent = host;
+      a.appendChild(h2);
+      a.appendChild(p);
+      a.appendChild(span);
+      box.appendChild(a);
+    });
+  })
+  .catch(function () {
+    document.getElementById("links").innerHTML = '<p class="loading">链接加载失败，请刷新再试。</p>';
+  });
+</script>
 </body>
 </html>

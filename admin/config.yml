@@ -1,0 +1,37 @@
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
+backend:
+  name: github
+  repo: Wzhuaboy/usagi
+  branch: main
+media_folder: images
+public_folder: /images
+collections:
+  - name: site
+    label: 网站内容
+    files:
+      - name: links
+        label: 导航链接
+        file: data/links.json
+        format: json
+        fields:
+          - name: title
+            label: 网站标题
+            widget: string
+          - name: subtitle
+            label: 副标题
+            widget: string
+          - name: links
+            label: 链接
+            label_singular: 链接
+            widget: list
+            fields:
+              - name: title
+                label: 名字
+                widget: string
+              - name: description
+                label: 介绍
+                widget: string
+                required: false
+              - name: url
+                label: 链接地址
+                widget: string
